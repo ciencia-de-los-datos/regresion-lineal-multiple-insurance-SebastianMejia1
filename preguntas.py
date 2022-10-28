@@ -1,10 +1,8 @@
 """
 Regresión Lineal Multiple
 -----------------------------------------------------------------------------------------
-
 En este laboratorio se entrenara un modelo de regresión lineal multiple que incluye la 
 selección de las n variables más relevantes usando una prueba f.
-
 """
 # pylint: disable=invalid-name
 # pylint: disable=unsubscriptable-object
@@ -18,20 +16,20 @@ def pregunta_01():
     -------------------------------------------------------------------------------------
     """
     # Lea el archivo `insurance.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv('insurance.csv', sep=",")
+    df = pd.read_csv('insurance.csv', sep=',')
 
     # Asigne la columna `charges` a la variable `y`.
-    y = df['charge']
+    y = df['charges']
 
     # Asigne una copia del dataframe `df` a la variable `X`.
     X = df.copy()
 
     # Remueva la columna `charges` del DataFrame `X`.
-    X.drop("charges", axis=1, inplace=True)
+    X=X.drop('charges',1)
 
     # Retorne `X` y `y`
     return X, y
-
+#print(pregunta_01())
 
 def pregunta_02():
     """
@@ -72,14 +70,14 @@ def pregunta_03():
     # Importe GridSearchCV
     # Importe Pipeline
     # Importe OneHotEncoder
-    from sklearn.compose import make_column_selector
-    from sklearn.compose import make_column_transformer
-    from sklearn.feature_selection import SelectKBest
-    from sklearn.feature_selection import f_regression
+    from sklearn.compose import make_column_selector, make_column_transformer
+    from sklearn.feature_selection import SelectKBest, f_regression
     from sklearn.linear_model import LinearRegression
     from sklearn.model_selection import GridSearchCV
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import OneHotEncoder
+
+
 
 
     pipeline = Pipeline(
@@ -92,7 +90,7 @@ def pregunta_03():
                 make_column_transformer(
                     (
                         OneHotEncoder(),
-                        make_column_selector(dtype_include='object'),
+                        make_column_selector(dtype_include=object),
                     ),
                     remainder="passthrough",
                 ),
@@ -105,7 +103,7 @@ def pregunta_03():
             ),
             # Paso 3: Construya un modelo de regresión lineal.
             (
-                "LinearRegression",
+                "linearRegression",
                 LinearRegression(),
             ),
         ],
@@ -117,7 +115,7 @@ def pregunta_03():
     # Defina un diccionario de parámetros para el GridSearchCV. Se deben
     # considerar valores desde 1 hasta 11 regresores para el modelo
     param_grid = {
-        'selectKBest_k': range(1, 12),
+        'selectKBest__k': list(range(1, 12)),
     }
 
     # Defina una instancia de GridSearchCV con el pipeline y el diccionario de
@@ -127,9 +125,9 @@ def pregunta_03():
         estimator=pipeline,
         param_grid=param_grid,
         cv=5,
-        scoring="neg_mean_squared_error",
+        scoring='neg_mean_squared_error',
         refit=True,
-        return_train_score=True,
+        return_train_score=False,
     )
 
     # Búsque la mejor combinación de regresores
@@ -147,7 +145,6 @@ def pregunta_04():
 
     # Importe mean_squared_error
     from sklearn.metrics import mean_squared_error
-
 
     # Obtenga el pipeline optimo de la pregunta 3.
     gridSearchCV = pregunta_03()
